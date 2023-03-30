@@ -14,7 +14,13 @@ app.use(express.json()); //req.body
 
 app.post('/todos', async (req, res) => {
   try {
-    console.log(req.body);
+    const { description } = req.body;
+    const newTodo = await pool.query(
+      'INSERT INTO perntodo (description) VALUES($1) returning *',
+      [description]
+    );
+
+    res.json(newTodo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
