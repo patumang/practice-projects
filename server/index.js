@@ -26,6 +26,17 @@ app.post('/todos', async (req, res) => {
   }
 });
 
+//get all todos
+
+app.get('/todos', async (req, res) => {
+  try {
+    const allTodos = await pool.query('SELECT * FROM perntodo');
+    res.json(allTodos.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 app.listen(3000, () => {
   console.log('server has started on port 3000');
 });
