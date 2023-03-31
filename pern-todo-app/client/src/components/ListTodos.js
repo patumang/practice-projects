@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 
+import EditTodo from './EditTodo';
+
 const ListTodos = () => {
   const [todos, setTodos] = useState([]);
 
@@ -55,7 +57,7 @@ const ListTodos = () => {
             <tr key={todo.todo_id}>
               <td>{todo.description}</td>
               <td>
-                <button className='btn btn-warning'>Edit</button>
+                <EditTodo todo={todo} />
               </td>
               <td>
                 <button
