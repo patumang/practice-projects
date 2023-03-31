@@ -10,77 +10,62 @@ app.use(express.json()); //req.body
 
 //ROUTES//
 
-//create a todo
+//create a task
 
-app.post('/todos', async (req, res) => {
+app.post('/tasks', async (req, res) => {
   try {
-    const { description } = req.body;
-    const newTodo = await pool.query(
-      'INSERT INTO perntodo (description) VALUES($1) returning *',
-      [description]
+    const { taskTitle, taskDescription, tagId, fusId } = req.body;
+    const newTask = await pool.query(
+      'INSERT INTO tasks (task_title, task_description, task_created_date) VALUES($1, $2, CURRENT_TIMESTAMP) returning *',
+      [taskTitle, taskDescription]
     );
 
-    res.json(newTodo.rows[0]);
+    res.json(newTask.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
 });
 
-//get all todos
+//get all tasks
 
-app.get('/todos', async (req, res) => {
+app.get('/tasks', async (req, res) => {
   try {
-    const allTodos = await pool.query('SELECT * FROM perntodo');
-    res.json(allTodos.rows);
+    const allTasks = await pool.query('SELECT * FROM tasks');
+    res.json(allTasks.rows);
   } catch (err) {
     console.error(err.message);
   }
 });
 
-//get a todo
+//get a task
 
-app.get('/todos/:id', async (req, res) => {
+app.get('/tasks/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const todo = await pool.query('SELECT * FROM perntodo WHERE todo_id = $1', [
+    const task = await pool.query('SELECT * FROM tasks WHERE task_id = $1', [
       id,
     ]);
 
-    res.json(todo.rows[0]);
+    res.json(task.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
 });
 
-//update a todo
+//update a task
 
-app.put('/todos/:id', async (req, res) => {
+app.put('/tasks/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { description } = req.body;
-    const updateTodo = await pool.query(
-      'UPDATE perntodo SET description = $1 WHERE todo_id = $2',
-      [description, id]
+    const { taskTitle, taskDescription } = req.body;
+    const updateTask = await pool.query(
+      'UPDATE tasks SET task_title = $1, task_description = $2 WHERE task_id = $3',
+      [taskTitle, taskDescription, id]
     );
 
-    res.json('Todo was updated!');
+    res.json('Task was updated!');
   } catch (err) {
     console.error(err.message);
-  }
-});
-
-//delete a todo
-
-app.delete('/todos/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleteTodo = await pool.query(
-      'DELETE FROM perntodo WHERE todo_id = $1',
-      [id]
-    );
-    res.json('Todo was deleted!');
-  } catch (err) {
-    console.log(err.message);
   }
 });
 
