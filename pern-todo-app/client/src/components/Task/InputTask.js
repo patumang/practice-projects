@@ -14,7 +14,7 @@ const InputTask = () => {
         body: JSON.stringify(body),
       });
 
-      window.location = '/';
+      window.location = '/tasks';
     } catch (err) {
       console.error(err.message);
     }
@@ -22,10 +22,9 @@ const InputTask = () => {
 
   return (
     <Fragment>
-      <h1 className='text-center mt-5'>Pern Tasks List</h1>
-      <form className='mt-5' onSubmit={onSubmitForm}>
-        <div className='form-group'>
-          <label htmlFor='taskTitle'>Title</label>
+      <form className='mt-4' onSubmit={onSubmitForm}>
+        <div className='form-group mt-2'>
+          <label htmlFor='taskTitle'>Task Title</label>
           <input
             type='text'
             className='form-control'
@@ -35,8 +34,8 @@ const InputTask = () => {
             onChange={(e) => setTaskTitle(e.target.value)}
           />
         </div>
-        <div className='form-group'>
-          <label htmlFor='taskDescription'>Description</label>
+        <div className='form-group mt-2'>
+          <label htmlFor='taskDescription'>Task Description</label>
           <textarea
             type='text'
             className='form-control'
@@ -47,7 +46,7 @@ const InputTask = () => {
             rows='10'
           ></textarea>
         </div>
-        <button className='btn btn-success'>Add</button>
+        <button className='btn btn-success mt-2'>Add</button>
       </form>
     </Fragment>
   );

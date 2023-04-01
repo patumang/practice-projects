@@ -1,19 +1,24 @@
-import { Fragment } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 
 //components
 
-import InputTask from './components/InputTask';
-import ListTasks from './components/ListTasks';
+import SharedLayout from './components/SharedLayout';
+import Home from './components/Home';
+import Tag from './components/Tag/Tag';
+import ListTasks from './components/Task/ListTasks';
 
 function App() {
   return (
-    <Fragment>
-      <div className='container'>
-        <InputTask />
-        <ListTasks />
-      </div>
-    </Fragment>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<SharedLayout />}>
+          <Route index element={<Home />} />
+          <Route path='tasks' element={<ListTasks />} />
+          <Route path='tags' element={<Tag />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

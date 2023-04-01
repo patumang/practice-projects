@@ -35,12 +35,12 @@ app.post('/tasks', async (req, res) => {
       'INSERT INTO tasks (task_title, task_description, task_created_date) VALUES($1, $2, CURRENT_TIMESTAMP) returning *',
       [taskTitle, taskDescription]
     );
-    for (const tag of tags) {
-      const newTaskTag = await pool.query(
-        'INSERT INTO tasks_tags (task_id, tag_id) VALUES($1, $2)',
-        [newTask.rows[0].task_id, tag]
-      );
-    }
+    // for (const tag of tags) {
+    //   const newTaskTag = await pool.query(
+    //     'INSERT INTO tasks_tags (task_id, tag_id) VALUES($1, $2)',
+    //     [newTask.rows[0].task_id, tag]
+    //   );
+    // }
 
     res.json(newTask.rows[0]);
   } catch (err) {
@@ -52,7 +52,9 @@ app.post('/tasks', async (req, res) => {
 
 app.get('/tasks', async (req, res) => {
   try {
-    const allTasks = await pool.query('SELECT * FROM tasks');
+    const allTasks = await pool.query(
+      'SELECT * FROM tasks ORDER BY task_id DESC'
+    );
     res.json(allTasks.rows);
   } catch (err) {
     console.error(err.message);

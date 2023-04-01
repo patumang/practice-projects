@@ -20,7 +20,7 @@ const EditTask = ({ task }) => {
         }
       );
 
-      window.location = '/';
+      window.location = '/tasks';
     } catch (err) {
       console.error(err.message);
     }
