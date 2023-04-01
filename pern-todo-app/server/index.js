@@ -10,15 +10,37 @@ app.use(express.json()); //req.body
 
 //ROUTES//
 
+//create a tag
+
+app.post('/tags', async (req, res) => {
+  try {
+    const { tagTitle } = req.body;
+    const newTag = await pool.query(
+      'INSERT INTO tags (tag_title) VALUES($1) returning *',
+      [tagTitle]
+    );
+
+    res.json(newTag.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 //create a task
 
 app.post('/tasks', async (req, res) => {
   try {
-    const { taskTitle, taskDescription, tagId, fusId } = req.body;
+    const { taskTitle, taskDescription, tags } = req.body;
     const newTask = await pool.query(
       'INSERT INTO tasks (task_title, task_description, task_created_date) VALUES($1, $2, CURRENT_TIMESTAMP) returning *',
       [taskTitle, taskDescription]
     );
+    for (const tag of tags) {
+      const newTaskTag = await pool.query(
+        'INSERT INTO tasks_tags (task_id, tag_id) VALUES($1, $2)',
+        [newTask.rows[0].task_id, tag]
+      );
+    }
 
     res.json(newTask.rows[0]);
   } catch (err) {
@@ -47,6 +69,23 @@ app.get('/tasks/:id', async (req, res) => {
     ]);
 
     res.json(task.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+//update a tag
+
+app.put('/tags/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { tagTitle } = req.body;
+    const updateTag = await pool.query(
+      'UPDATE tags SET tag_title = $1 WHERE tag_id = $2',
+      [tagTitle, id]
+    );
+
+    res.json('Tag was updated!');
   } catch (err) {
     console.error(err.message);
   }
