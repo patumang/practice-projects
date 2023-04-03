@@ -48,6 +48,17 @@ app.post('/tasks', async (req, res) => {
   }
 });
 
+//get all tags
+
+app.get('/tags', async (req, res) => {
+  try {
+    const allTags = await pool.query('SELECT * FROM tags ORDER BY tag_id DESC');
+    res.json(allTags.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 //get all tasks
 
 app.get('/tasks', async (req, res) => {

@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 
 //components
 
-// import InputTask from './InputTask';
-// import ListTasks from './ListTasks';
+import InputTag from './InputTag';
+import ListTags from './ListTags';
 
 const Tag = () => {
   return (
     <Fragment>
       <h2>Tags</h2>
 
-      {/* <div className='container'>
-        <InputTask />
-        <ListTasks />
-      </div> */}
+      <div className='container'>
+        <InputTag />
+        <ListTags />
+      </div>
     </Fragment>
   );
 };
