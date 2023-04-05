@@ -30,17 +30,17 @@ app.post('/tags', async (req, res) => {
 
 app.post('/tasks', async (req, res) => {
   try {
-    const { taskTitle, taskDescription, tags } = req.body;
+    const { taskTitle, taskDescription, selectedTags } = req.body;
     const newTask = await pool.query(
       'INSERT INTO tasks (task_title, task_description, task_created_date) VALUES($1, $2, CURRENT_TIMESTAMP) returning *',
       [taskTitle, taskDescription]
     );
-    // for (const tag of tags) {
-    //   const newTaskTag = await pool.query(
-    //     'INSERT INTO tasks_tags (task_id, tag_id) VALUES($1, $2)',
-    //     [newTask.rows[0].task_id, tag]
-    //   );
-    // }
+    for (const tag of selectedTags) {
+      const newTaskTag = await pool.query(
+        'INSERT INTO tasks_tags (task_id, tag_id) VALUES($1, $2)',
+        [newTask.rows[0].task_id, tag]
+      );
+    }
 
     res.json(newTask.rows[0]);
   } catch (err) {
