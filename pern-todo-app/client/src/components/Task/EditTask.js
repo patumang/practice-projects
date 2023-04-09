@@ -1,24 +1,60 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-const EditTask = ({ task }) => {
-  const [taskTitle, setTaskTitle] = useState(task.task_title);
-  const [taskDescription, setTaskDescription] = useState(task.task_description);
+const EditTask = () => {
+  const { id } = useParams();
+  const [taskTitle, setTaskTitle] = useState('');
+  const [taskDescription, setTaskDescription] = useState('');
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const getTask = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/tasks/${id}`);
+      const jsonData = await response.json();
+      setTaskTitle(jsonData.task_title);
+      setTaskDescription(jsonData.task_description);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const getTags = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/tags');
+      const jsonData = await response.json();
+      setTags(jsonData);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const getSelectedTags = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/task_tags/${id}`);
+      const jsonData = await response.json();
+      setSelectedTags(jsonData.map(({ tag_id }) => tag_id));
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getTask();
+    getTags();
+    getSelectedTags();
+  }, []);
 
   //edit Task function
-
   const updateTask = async (e) => {
     e.preventDefault();
     try {
       const body = { taskTitle, taskDescription };
-      console.log(body);
-      const response = await fetch(
-        `http://localhost:3000/tasks/${task.task_id}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        }
-      );
+      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
 
       window.location = '/tasks';
     } catch (err) {
@@ -28,88 +64,59 @@ const EditTask = ({ task }) => {
 
   return (
     <Fragment>
+      <div className='form-group'>
+        <label htmlFor='taskTitle'>Title</label>
+        <input
+          type='text'
+          className='form-control'
+          id='taskTitle'
+          placeholder='Title'
+          value={taskTitle}
+          onChange={(e) => setTaskTitle(e.target.value)}
+        />
+      </div>
+      <div className='form-group mt-2'>
+        <label className='form-label select-label'>Tags</label>
+        <select
+          className='select form-control'
+          multiple
+          onChange={(e) =>
+            setSelectedTags(
+              Array.from(e.target.selectedOptions, (option) => option.value)
+            )
+          }
+        >
+          {tags.map((tag) => (
+            <option
+              key={tag.tag_id}
+              value={tag.tag_id}
+              selected={selectedTags && selectedTags.includes(tag.tag_id)}
+            >
+              {tag.tag_title}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className='form-group'>
+        <label htmlFor='taskDescription'>Description</label>
+        <textarea
+          type='text'
+          className='form-control'
+          id='taskDescription'
+          placeholder='Description'
+          value={taskDescription}
+          onChange={(e) => setTaskDescription(e.target.value)}
+          rows='10'
+        ></textarea>
+      </div>
+
       <button
         type='button'
         className='btn btn-warning'
-        data-bs-toggle='modal'
-        data-bs-target={`#id${task.task_id}`}
+        onClick={(e) => updateTask(e)}
       >
-        Edit
+        Update
       </button>
-
-      <div
-        className='modal'
-        id={`id${task.task_id}`}
-        onClick={() => {
-          setTaskTitle(task.task_title);
-          setTaskDescription(task.task_description);
-        }}
-      >
-        <div className='modal-dialog'>
-          <div className='modal-content'>
-            <div className='modal-header'>
-              <h4 className='modal-title'>Edit Task</h4>
-              <button
-                type='button'
-                className='btn-close'
-                data-bs-dismiss='modal'
-                onClick={() => {
-                  setTaskTitle(task.task_title);
-                  setTaskDescription(task.task_description);
-                }}
-              ></button>
-            </div>
-
-            <div className='modal-body'>
-              <div className='form-group'>
-                <label htmlFor='taskTitle'>Title</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  id='taskTitle'
-                  placeholder='Title'
-                  value={taskTitle}
-                  onChange={(e) => setTaskTitle(e.target.value)}
-                />
-              </div>
-              <div className='form-group'>
-                <label htmlFor='taskDescription'>Description</label>
-                <textarea
-                  type='text'
-                  className='form-control'
-                  id='taskDescription'
-                  placeholder='Description'
-                  value={taskDescription}
-                  onChange={(e) => setTaskDescription(e.target.value)}
-                  rows='10'
-                ></textarea>
-              </div>
-            </div>
-
-            <div className='modal-footer'>
-              <button
-                type='button'
-                className='btn btn-warning'
-                data-bs-dismiss='modal'
-                onClick={(e) => updateTask(e)}
-              >
-                Update
-              </button>
-              <button
-                type='button'
-                className='btn btn-danger'
-                data-bs-dismiss='modal'
-                onClick={() => {
-                  setTaskTitle(task.task_title);
-                  setTaskDescription(task.task_description);
-                }}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </Fragment>
   );
 };

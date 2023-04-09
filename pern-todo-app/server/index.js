@@ -87,6 +87,21 @@ app.get('/tasks/:id', async (req, res) => {
   }
 });
 
+//get task tags
+
+app.get('/task_tags/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const taskTags = await pool.query(
+      'SELECT tasks_tags.tag_id,tags.tag_title FROM tasks_tags INNER JOIN tasks ON tasks.task_id = tasks_tags.task_id INNER JOIN tags ON tags.tag_id = tasks_tags.tag_id WHERE tasks.task_id = $1',
+      [id]
+    );
+    res.json(taskTags.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 //update a tag
 
 app.put('/tags/:id', async (req, res) => {

@@ -1,46 +1,44 @@
-import { Fragment } from 'react';
+import { Fragment, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-const ViewTask = ({ task }) => {
+const ViewTask = () => {
+  const { id } = useParams();
+
+  const [task, setTask] = useState({});
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const getTask = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/tasks/${id}`);
+      const jsonData = await response.json();
+
+      setTask(jsonData);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const getSelectedTags = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/task_tags/${id}`);
+      const jsonData = await response.json();
+      setSelectedTags(jsonData.map(({ tag_title }) => tag_title));
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getTask();
+    getSelectedTags();
+  }, []);
   return (
     <Fragment>
-      <button
-        type='button'
-        className='btn btn-primary'
-        data-bs-toggle='modal'
-        data-bs-target={`#id-view-${task.task_id}`}
-      >
-        View
-      </button>
-
-      <div className='modal' id={`id-view-${task.task_id}`}>
-        <div className='modal-dialog'>
-          <div className='modal-content'>
-            <div className='modal-header'>
-              <h4 className='modal-title'>View Task</h4>
-              <button
-                type='button'
-                className='btn-close'
-                data-bs-dismiss='modal'
-              ></button>
-            </div>
-
-            <div className='modal-body'>
-              <p>{task.task_title}</p>
-              <p>{task.task_description}</p>
-            </div>
-
-            <div className='modal-footer'>
-              <button
-                type='button'
-                className='btn btn-danger'
-                data-bs-dismiss='modal'
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <p>{task && task.task_title}</p>
+      <br />
+      <p>{selectedTags && selectedTags.toString()}</p>
+      <br />
+      <p>{task && task.task_description}</p>
     </Fragment>
   );
 };

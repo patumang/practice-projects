@@ -1,7 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-
-import EditTask from './EditTask';
-import ViewTask from './ViewTask';
+import { Link } from 'react-router-dom';
 
 const ListTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -21,8 +19,6 @@ const ListTasks = () => {
     getTasks();
   }, []);
 
-  console.log(tasks);
-
   return (
     <Fragment>
       {' '}
@@ -39,10 +35,10 @@ const ListTasks = () => {
             <tr key={task.task_id}>
               <td>{task.task_title}</td>
               <td>
-                <EditTask task={task} />
+                <Link to={`/tasks/${task.task_id}/update`}>Edit</Link>
               </td>
               <td>
-                <ViewTask task={task} />
+                <Link to={`/tasks/${task.task_id}`}>View</Link>
               </td>
             </tr>
           ))}
