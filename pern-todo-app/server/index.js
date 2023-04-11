@@ -63,9 +63,29 @@ app.get('/tags', async (req, res) => {
 
 app.get('/tasks', async (req, res) => {
   try {
-    const allTasks = await pool.query(
-      'SELECT * FROM tasks ORDER BY task_id DESC'
-    );
+    const keyword = req.query.keyword;
+    const field = req.query.field;
+    let query =
+      'SELECT tasks.task_id, tasks.task_title, tasks.task_description FROM tasks';
+    if (keyword && field === 'tag') {
+      query += ` INNER JOIN tasks_tags ON tasks.task_id = tasks_tags.task_id INNER JOIN tags ON tags.tag_id = tasks_tags.tag_id WHERE UPPER(tags.tag_title) LIKE '%${keyword.toUpperCase()}%'`;
+    } else if (keyword && field === 'all') {
+      query += ` WHERE UPPER(task_title) LIKE '%${keyword
+        .toUpperCase()
+        .trim()}%' OR UPPER(task_description) LIKE '%${keyword
+        .toUpperCase()
+        .trim()}%'`;
+    } else if (keyword && field === 'title') {
+      query += ` WHERE UPPER(task_title) LIKE '%${keyword
+        .toUpperCase()
+        .trim()}%'`;
+    } else if (keyword && field === 'description') {
+      query += ` WHERE UPPER(task_description) LIKE '%${keyword
+        .toUpperCase()
+        .trim()}%'`;
+    }
+    query += ' ORDER BY tasks.task_id DESC';
+    const allTasks = await pool.query(query);
     res.json(allTasks.rows);
   } catch (err) {
     console.error(err.message);
@@ -130,14 +150,12 @@ app.put('/tasks/:id', async (req, res) => {
       'UPDATE tasks SET task_title = $1, task_description = $2 WHERE task_id = $3',
       [taskTitle, taskDescription, id]
     );
-    console.log('selectedTags:', selectedTags.toString());
     const deSelectTaskTags = await pool.query(
       'UPDATE tasks_tags SET selected = false WHERE task_id = $1 AND tag_id NOT IN (' +
         selectedTags.toString() +
         ')',
       [id]
     );
-    console.log('selectedTags:', selectedTagsInt);
     const selectTaskTags = await pool.query(
       'UPDATE tasks_tags SET selected = true WHERE task_id = $1 AND tag_id IN (' +
         selectedTags.toString() +
