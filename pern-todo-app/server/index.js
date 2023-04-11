@@ -93,7 +93,7 @@ app.get('/task_tags/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const taskTags = await pool.query(
-      'SELECT tasks_tags.tag_id,tags.tag_title FROM tasks_tags INNER JOIN tasks ON tasks.task_id = tasks_tags.task_id INNER JOIN tags ON tags.tag_id = tasks_tags.tag_id WHERE tasks.task_id = $1',
+      'SELECT tasks_tags.tag_id,tags.tag_title FROM tasks_tags INNER JOIN tasks ON tasks.task_id = tasks_tags.task_id INNER JOIN tags ON tags.tag_id = tasks_tags.tag_id WHERE tasks.task_id = $1 AND tasks_tags.selected = true',
       [id]
     );
     res.json(taskTags.rows);
@@ -124,11 +124,33 @@ app.put('/tags/:id', async (req, res) => {
 app.put('/tasks/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { taskTitle, taskDescription } = req.body;
+    const { taskTitle, taskDescription, selectedTags } = req.body;
+    const selectedTagsInt = selectedTags.map((tag) => parseInt(tag));
     const updateTask = await pool.query(
       'UPDATE tasks SET task_title = $1, task_description = $2 WHERE task_id = $3',
       [taskTitle, taskDescription, id]
     );
+    console.log('selectedTags:', selectedTags.toString());
+    const deSelectTaskTags = await pool.query(
+      'UPDATE tasks_tags SET selected = false WHERE task_id = $1 AND tag_id NOT IN (' +
+        selectedTags.toString() +
+        ')',
+      [id]
+    );
+    console.log('selectedTags:', selectedTagsInt);
+    const selectTaskTags = await pool.query(
+      'UPDATE tasks_tags SET selected = true WHERE task_id = $1 AND tag_id IN (' +
+        selectedTags.toString() +
+        ')',
+      [id]
+    );
+
+    for (const tag of selectedTags) {
+      const insertTaskTags = await pool.query(
+        'INSERT INTO tasks_tags (task_id, tag_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT 1 FROM tasks_tags WHERE task_id = $1 AND tag_id = $2)',
+        [id, tag]
+      );
+    }
 
     res.json('Task was updated!');
   } catch (err) {

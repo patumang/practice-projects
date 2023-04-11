@@ -49,7 +49,7 @@ const EditTask = () => {
   const updateTask = async (e) => {
     e.preventDefault();
     try {
-      const body = { taskTitle, taskDescription };
+      const body = { taskTitle, taskDescription, selectedTags };
       const response = await fetch(`http://localhost:3000/tasks/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -80,6 +80,7 @@ const EditTask = () => {
         <select
           className='select form-control'
           multiple
+          value={selectedTags}
           onChange={(e) =>
             setSelectedTags(
               Array.from(e.target.selectedOptions, (option) => option.value)
@@ -87,11 +88,7 @@ const EditTask = () => {
           }
         >
           {tags.map((tag) => (
-            <option
-              key={tag.tag_id}
-              value={tag.tag_id}
-              selected={selectedTags && selectedTags.includes(tag.tag_id)}
-            >
+            <option key={tag.tag_id} value={tag.tag_id}>
               {tag.tag_title}
             </option>
           ))}
