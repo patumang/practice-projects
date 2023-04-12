@@ -1,10 +1,21 @@
 import { Fragment, useState, useEffect } from 'react';
+import { EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import { convertToHTML } from 'draft-convert';
+import DOMPurify from 'dompurify';
+
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const InputTask = () => {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
+  const [convertedContent, setConvertedContent] = useState(null);
+
   const getTags = async () => {
     try {
       const response = await fetch('http://localhost:3000/tags');
@@ -20,10 +31,25 @@ const InputTask = () => {
     getTags();
   }, []);
 
+  useEffect(() => {
+    let html = convertToHTML(editorState.getCurrentContent());
+    setConvertedContent(html);
+  }, [editorState]);
+
+  function createMarkup(html) {
+    return {
+      __html: DOMPurify.sanitize(html),
+    };
+  }
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      const body = { taskTitle, taskDescription, selectedTags };
+      const body = {
+        taskTitle,
+        taskDescription: convertedContent,
+        selectedTags,
+      };
       const response = await fetch('http://localhost:3000/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,7 +96,7 @@ const InputTask = () => {
         </div>
         <div className='form-group mt-2'>
           <label htmlFor='taskDescription'>Task Description</label>
-          <textarea
+          {/* <textarea
             type='text'
             className='form-control'
             id='taskDescription'
@@ -78,10 +104,21 @@ const InputTask = () => {
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
             rows='10'
-          ></textarea>
+          ></textarea> */}
+          <Editor
+            editorState={editorState}
+            onEditorStateChange={setEditorState}
+            wrapperClassName='wrapper-class'
+            editorClassName='editor-class'
+            toolbarClassName='toolbar-class'
+          />
         </div>
         <button className='btn btn-success mt-2'>Add</button>
       </form>
+      <div
+        className='preview'
+        dangerouslySetInnerHTML={createMarkup(convertedContent)}
+      ></div>
     </Fragment>
   );
 };

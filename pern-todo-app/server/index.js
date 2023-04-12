@@ -150,24 +150,27 @@ app.put('/tasks/:id', async (req, res) => {
       'UPDATE tasks SET task_title = $1, task_description = $2 WHERE task_id = $3',
       [taskTitle, taskDescription, id]
     );
-    const deSelectTaskTags = await pool.query(
-      'UPDATE tasks_tags SET selected = false WHERE task_id = $1 AND tag_id NOT IN (' +
-        selectedTags.toString() +
-        ')',
-      [id]
-    );
-    const selectTaskTags = await pool.query(
-      'UPDATE tasks_tags SET selected = true WHERE task_id = $1 AND tag_id IN (' +
-        selectedTags.toString() +
-        ')',
-      [id]
-    );
 
-    for (const tag of selectedTags) {
-      const insertTaskTags = await pool.query(
-        'INSERT INTO tasks_tags (task_id, tag_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT 1 FROM tasks_tags WHERE task_id = $1 AND tag_id = $2)',
-        [id, tag]
+    if (selectedTags.length > 0) {
+      const deSelectTaskTags = await pool.query(
+        'UPDATE tasks_tags SET selected = false WHERE task_id = $1 AND tag_id NOT IN (' +
+          selectedTags.toString() +
+          ')',
+        [id]
       );
+      const selectTaskTags = await pool.query(
+        'UPDATE tasks_tags SET selected = true WHERE task_id = $1 AND tag_id IN (' +
+          selectedTags.toString() +
+          ')',
+        [id]
+      );
+
+      for (const tag of selectedTags) {
+        const insertTaskTags = await pool.query(
+          'INSERT INTO tasks_tags (task_id, tag_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT 1 FROM tasks_tags WHERE task_id = $1 AND tag_id = $2)',
+          [id, tag]
+        );
+      }
     }
 
     res.json('Task was updated!');
