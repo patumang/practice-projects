@@ -1,33 +1,99 @@
 import { Link } from 'react-router-dom';
 
-const Navbar = () => {
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+
+function Navbar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
   return (
-    <nav className='navbar navbar-expand-lg navbar-light bg-light'>
-      <button
-        className='navbar-toggler'
-        type='button'
-        data-toggle='collapse'
-        data-target='#navbarNavAltMarkup'
-        aria-controls='navbarNavAltMarkup'
-        aria-expanded='false'
-        aria-label='Toggle navigation'
-      >
-        <span className='navbar-toggler-icon'></span>
-      </button>
-      <div className='collapse navbar-collapse' id='navbarNavAltMarkup'>
-        <div className='navbar-nav'>
-          <Link className='nav-item nav-link active' to='/'>
-            Home
-          </Link>
-          <Link className='nav-item nav-link' to='/tasks'>
-            Tasks
-          </Link>
-          <Link className='nav-item nav-link' to='/tags'>
-            Tags
-          </Link>
-        </div>
-      </div>
-    </nav>
+    <AppBar position='static'>
+      <Container maxWidth='xl'>
+        <Toolbar disableGutters>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size='large'
+              aria-label='account of current user'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
+              onClick={handleOpenNavMenu}
+              color='inherit'
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id='menu-appbar'
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to='/' style={{ textDecoration: 'none' }}>
+                  <Typography textAlign='center'>Home</Typography>
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to='/tasks' style={{ textDecoration: 'none' }}>
+                  <Typography textAlign='center'>Tasks</Typography>
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to='/tags' style={{ textDecoration: 'none' }}>
+                  <Typography textAlign='center'>Tags</Typography>
+                </Link>
+              </MenuItem>
+            </Menu>
+          </Box>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Link to='/' style={{ textDecoration: 'none' }}>
+              <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                Home
+              </Button>
+            </Link>
+            <Link to='/tasks' style={{ textDecoration: 'none' }}>
+              <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                Tasks
+              </Button>
+            </Link>
+            <Link to='/tags' style={{ textDecoration: 'none' }}>
+              <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                Tags
+              </Button>
+            </Link>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
-};
+}
 export default Navbar;

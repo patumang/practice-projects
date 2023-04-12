@@ -3,12 +3,12 @@ import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToHTML } from 'draft-convert';
 import DOMPurify from 'dompurify';
+import Button from '@mui/material/Button';
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const InputTask = () => {
   const [taskTitle, setTaskTitle] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [editorState, setEditorState] = useState(() =>
@@ -50,7 +50,7 @@ const InputTask = () => {
         taskDescription: convertedContent,
         selectedTags,
       };
-      const response = await fetch('http://localhost:3000/tasks', {
+      await fetch('http://localhost:3000/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -96,15 +96,6 @@ const InputTask = () => {
         </div>
         <div className='form-group mt-2'>
           <label htmlFor='taskDescription'>Task Description</label>
-          {/* <textarea
-            type='text'
-            className='form-control'
-            id='taskDescription'
-            placeholder='Description'
-            value={taskDescription}
-            onChange={(e) => setTaskDescription(e.target.value)}
-            rows='10'
-          ></textarea> */}
           <Editor
             editorState={editorState}
             onEditorStateChange={setEditorState}
@@ -113,7 +104,7 @@ const InputTask = () => {
             toolbarClassName='toolbar-class'
           />
         </div>
-        <button className='btn btn-success mt-2'>Add</button>
+        <Button variant='contained'>Add</Button>
       </form>
       <div
         className='preview'
