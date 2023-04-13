@@ -1,9 +1,16 @@
+import * as React from 'react';
 import { Fragment, useState, useEffect } from 'react';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToHTML } from 'draft-convert';
 import DOMPurify from 'dompurify';
+
 import Button from '@mui/material/Button';
+import FormGroup from '@mui/material/FormGroup';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Autocomplete from '@mui/material/Autocomplete';
+import Stack from '@mui/material/Stack';
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -64,38 +71,41 @@ const InputTask = () => {
 
   return (
     <Fragment>
-      <form className='mt-4' onSubmit={onSubmitForm}>
-        <div className='form-group mt-2'>
-          <label htmlFor='taskTitle'>Task Title</label>
-          <input
-            type='text'
-            className='form-control'
-            id='taskTitle'
-            placeholder='Title'
-            value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
-          />
-        </div>
-        <div className='form-group mt-2'>
-          <label className='form-label select-label'>Tags</label>
-          <select
-            className='select form-control'
+      <Box
+        component='form'
+        onSubmit={onSubmitForm}
+        noValidate
+        sx={{ mt: 1, mx: 'auto', maxWidth: '95%' }}
+      >
+        <TextField
+          margin='normal'
+          required
+          fullWidth
+          id='taskTitle'
+          label='Task Title'
+          name='taskTitle'
+          autoComplete='email'
+          value={taskTitle}
+          onChange={(e) => setTaskTitle(e.target.value)}
+          autoFocus
+          sx={{ mt: 3 }}
+        />
+        <Stack spacing={3} sx={{ width: '100%' }}>
+          <Autocomplete
             multiple
-            onChange={(e) =>
-              setSelectedTags(
-                Array.from(e.target.selectedOptions, (option) => option.value)
-              )
+            id='tags-outlined'
+            options={tags}
+            getOptionLabel={(option) => option.tag_title}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField {...params} placeholder='Tags' />
+            )}
+            onChange={(e, filteredTags) =>
+              setSelectedTags(filteredTags.map((tag) => tag.tag_id))
             }
-          >
-            {tags.map((tag) => (
-              <option key={tag.tag_id} value={tag.tag_id}>
-                {tag.tag_title}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className='form-group mt-2'>
-          <label htmlFor='taskDescription'>Task Description</label>
+          />
+        </Stack>
+        <FormGroup sx={{ mt: 3 }}>
           <Editor
             editorState={editorState}
             onEditorStateChange={setEditorState}
@@ -103,9 +113,11 @@ const InputTask = () => {
             editorClassName='editor-class'
             toolbarClassName='toolbar-class'
           />
-        </div>
-        <Button variant='contained'>Add</Button>
-      </form>
+        </FormGroup>
+        <Button type='submit' fullWidth variant='contained' sx={{ mt: 3 }}>
+          Add
+        </Button>
+      </Box>
       <div
         className='preview'
         dangerouslySetInnerHTML={createMarkup(convertedContent)}

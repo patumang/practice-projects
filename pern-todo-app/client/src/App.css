@@ -1,12 +1,13 @@
 .wrapper-class {
-  padding: 1rem;
+  padding: 0.5rem;
   border: 1px solid #ccc;
 }
 .editor-class {
   background-color: lightgray;
-  padding: 1rem;
-  height: 200px;
+  padding: 0.5rem;
+  min-height: 200px;
   border: 1px solid #ccc;
+  line-height: 0.6rem;
 }
 .toolbar-class {
   border: 1px solid #ccc;
