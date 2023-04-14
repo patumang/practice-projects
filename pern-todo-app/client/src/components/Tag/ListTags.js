@@ -18,8 +18,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditTag from './EditTag';
 
 const columns = [
-  { id: 'tag_title', label: 'Tag Title', minWidth: 500 },
   { id: 'edit', label: 'Edit', minWidth: 50 },
+  { id: 'tag_title', label: 'Tag Title', minWidth: 500 },
 ];
 
 const ListTags = () => {
@@ -109,10 +109,10 @@ const ListTags = () => {
                       tabIndex={-1}
                       key={tag.tag_id}
                     >
-                      <TableCell>{tag.tag_title}</TableCell>
                       <TableCell>
                         <EditTag tag={tag} />
                       </TableCell>
+                      <TableCell>{tag.tag_title}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -61,6 +61,7 @@ const EditTag = ({ tag }) => {
             Edit
           </Button>
           <Dialog
+            fullWidth
             open={openEditDialog}
             onClose={handleCloseEditDialog}
             aria-labelledby='edit-dialog-title'
@@ -68,7 +69,7 @@ const EditTag = ({ tag }) => {
             <DialogTitle id='edit-dialog-title'>Edit Tag</DialogTitle>
             <DialogContent>
               <TextField
-                margin='normal'
+                margin='dense'
                 required
                 fullWidth
                 id='tagTitle'
@@ -78,6 +79,7 @@ const EditTag = ({ tag }) => {
                 onChange={(e) => setTagTitle(e.target.value)}
                 autoFocus
                 sx={{ mt: 3 }}
+                variant='standard'
               />
             </DialogContent>
             <DialogActions>
