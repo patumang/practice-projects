@@ -84,7 +84,6 @@ const InputTask = () => {
           id='taskTitle'
           label='Task Title'
           name='taskTitle'
-          autoComplete='email'
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
           autoFocus

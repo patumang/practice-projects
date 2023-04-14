@@ -52,7 +52,15 @@ app.post('/tasks', async (req, res) => {
 
 app.get('/tags', async (req, res) => {
   try {
-    const allTags = await pool.query('SELECT * FROM tags ORDER BY tag_id DESC');
+    const keyword = req.query.keyword;
+    let query = 'SELECT * FROM tags';
+    if (keyword) {
+      query += ` WHERE UPPER(tag_title) LIKE '%${keyword
+        .toUpperCase()
+        .trim()}%'`;
+    }
+    query += ' ORDER BY tag_id DESC';
+    const allTags = await pool.query(query);
     res.json(allTags.rows);
   } catch (err) {
     console.error(err.message);

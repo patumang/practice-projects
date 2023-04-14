@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+
+import Box from '@mui/material/Box';
 
 //components
 
@@ -9,12 +10,10 @@ import ListTags from './ListTags';
 const Tag = () => {
   return (
     <Fragment>
-      <h2>Tags</h2>
-
-      <div className='container'>
+      <Box sx={{ m: 2, mx: 'auto', maxWidth: '95%' }}>
         <InputTag />
         <ListTags />
-      </div>
+      </Box>
     </Fragment>
   );
 };

@@ -1,5 +1,10 @@
 import { Fragment, useState } from 'react';
 
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+
 const InputTag = () => {
   const [tagTitle, setTagTitle] = useState('');
 
@@ -21,19 +26,29 @@ const InputTag = () => {
 
   return (
     <Fragment>
-      <form className='mt-4 d-flex' onSubmit={onSubmitForm}>
-        <div className='form-group mt-2'>
-          <input
-            type='text'
-            className='form-control'
-            id='tagTitle'
-            placeholder='add new Tag Title'
-            value={tagTitle}
-            onChange={(e) => setTagTitle(e.target.value)}
-          />
-        </div>
-        <button className='btn btn-success mt-2'>Add</button>
-      </form>
+      <Box component='form' onSubmit={onSubmitForm} noValidate sx={{ mt: 1 }}>
+        <Grid container spacing={2} alignItems='center' sx={{ my: 3 }}>
+          <Grid item xs={8} md={10}>
+            <TextField
+              margin='normal'
+              required
+              fullWidth
+              id='tagTitle'
+              label='Tag Title'
+              name='tagTitle'
+              value={tagTitle}
+              onChange={(e) => setTagTitle(e.target.value)}
+              autoFocus
+              sx={{ mt: 3 }}
+            />
+          </Grid>
+          <Grid item xs={4} md={2}>
+            <Button type='submit' fullWidth variant='contained' sx={{ mt: 3 }}>
+              Add
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
     </Fragment>
   );
 };

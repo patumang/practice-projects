@@ -59,7 +59,7 @@ const ListTasks = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       getTasks();
-    }, 1500);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [searchKeyword, searchField]);
