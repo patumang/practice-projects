@@ -23,6 +23,9 @@ import {
   jobit,
   tripguide,
   threejs,
+  helpme,
+  interviewscheduler,
+  barchart,
 } from '../assets';
 
 export const navLinks = [
@@ -175,9 +178,9 @@ const testimonials = [
 
 const projects = [
   {
-    name: 'Car Rent',
+    name: 'helpME',
     description:
-      'Web-based platform that allows users to search, book, and manage car rentals from various providers, providing a convenient and efficient solution for transportation needs.',
+      'HelpME is an interactive social help network. Where you can contact volunteers from our community and quickly connect through chat anytime and get help or discuss any topic you want.',
     tags: [
       {
         name: 'react',
@@ -192,13 +195,13 @@ const projects = [
         color: 'pink-text-gradient',
       },
     ],
-    image: carrent,
-    source_code_link: 'https://github.com/',
+    image: helpme,
+    source_code_link: 'https://github.com/patumang/helpME',
   },
   {
-    name: 'Job IT',
+    name: 'Interview Scheduler',
     description:
-      'Web application that enables users to search for job openings, view estimated salary ranges for positions, and locate available jobs based on their current location.',
+      'Interview Scheduler is a single-page application where students can book, update or cancel appointments with an interviewer.',
     tags: [
       {
         name: 'react',
@@ -213,13 +216,13 @@ const projects = [
         color: 'pink-text-gradient',
       },
     ],
-    image: jobit,
-    source_code_link: 'https://github.com/',
+    image: interviewscheduler,
+    source_code_link: 'https://github.com/patumang/scheduler',
   },
   {
-    name: 'Trip Guide',
+    name: 'Bar Chart Library',
     description:
-      'A comprehensive travel booking platform that allows users to book flights, hotels, and rental cars, and offers curated recommendations for popular destinations.',
+      'A Bar Chart Library can be integrated by developers in their app to render charts using dynamic datasets.',
     tags: [
       {
         name: 'nextjs',
@@ -234,8 +237,8 @@ const projects = [
         color: 'pink-text-gradient',
       },
     ],
-    image: tripguide,
-    source_code_link: 'https://github.com/',
+    image: barchart,
+    source_code_link: 'https://github.com/patumang/bar-chart-project',
   },
 ];
 
